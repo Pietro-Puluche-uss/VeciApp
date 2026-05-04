@@ -1,0 +1,27 @@
+package com.veciapp.api.controller;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.veciapp.api.dto.DashboardHomeResponse;
+import com.veciapp.api.security.SecurityUtils;
+import com.veciapp.api.service.DashboardService;
+
+@RestController
+@RequestMapping("/api/dashboard")
+public class DashboardController {
+
+    private final DashboardService dashboardService;
+
+    public DashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
+
+    @GetMapping("/home")
+    public DashboardHomeResponse getHome(Authentication authentication) {
+        return dashboardService.getHome(SecurityUtils.currentUserId(authentication));
+    }
+}
+

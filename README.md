@@ -34,12 +34,15 @@ La API lee estas variables:
 - `DB_USER`
 - `DB_PASSWORD`
 - `DB_SSL_MODE`
+- `DB_MAX_POOL_SIZE`
+- `DB_MIN_IDLE`
 - `JWT_SECRET`
 - `JWT_EXPIRATION_MS`
 - `APP_CORS_ALLOWED_ORIGINS`
 - `SHOW_SQL`
 
 Puedes usar `DB_URL` completo o la combinacion `DB_HOST`, `DB_PORT`, `DB_NAME`.
+Si tu plan de Aiven tiene pocas conexiones disponibles, usa `DB_MAX_POOL_SIZE=1` y `DB_MIN_IDLE=0`.
 
 ## Ejecucion local
 
@@ -57,4 +60,3 @@ mvn spring-boot:run
 - `GET /`
 - `GET /api/health`
 - `GET /actuator/health`
-

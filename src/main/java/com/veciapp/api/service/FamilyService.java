@@ -36,6 +36,7 @@ public class FamilyService {
         this.profileService = profileService;
     }
 
+    @Transactional(readOnly = true)
     public List<FamilyMemberResponse> listMembers(Long userId) {
         return familyMemberRepository.findByOwnerIdOrderByCreatedAtAsc(userId).stream()
                 .map(this::toResponse)
@@ -79,6 +80,7 @@ public class FamilyService {
         familyMemberRepository.delete(familyMember);
     }
 
+    @Transactional(readOnly = true)
     public List<FamilyMapMemberResponse> getFamilyMap(Long userId) {
         User owner = profileService.loadUser(userId);
         List<FamilyMapMemberResponse> members = new ArrayList<>();
@@ -124,4 +126,3 @@ public class FamilyService {
         return value.trim();
     }
 }
-

@@ -11,6 +11,7 @@ public interface EmergencyAlertRepository extends JpaRepository<EmergencyAlert, 
 
     List<EmergencyAlert> findByUserIdOrderByCreatedAtDesc(Long userId);
 
+    java.util.Optional<EmergencyAlert> findByIdAndUserId(Long id, Long userId);
+
     long countByCreatedAtAfter(OffsetDateTime createdAt);
 }
-

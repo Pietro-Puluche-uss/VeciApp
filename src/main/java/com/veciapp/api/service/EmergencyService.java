@@ -14,6 +14,7 @@ import com.veciapp.api.entity.AuthorityCenter;
 import com.veciapp.api.entity.EmergencyAlert;
 import com.veciapp.api.entity.User;
 import com.veciapp.api.exception.BadRequestException;
+import com.veciapp.api.exception.ResourceNotFoundException;
 import com.veciapp.api.repository.AuthorityCenterRepository;
 import com.veciapp.api.repository.EmergencyAlertRepository;
 import com.veciapp.api.util.GeoUtils;
@@ -67,6 +68,12 @@ public class EmergencyService {
                 .toList();
     }
 
+    public EmergencyResponse getMineById(Long userId, Long alertId) {
+        EmergencyAlert alert = emergencyAlertRepository.findByIdAndUserId(alertId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Emergencia no encontrada"));
+        return toDetailResponse(alert);
+    }
+
     private void assignNearestCenter(EmergencyAlert alert, Double latitude, Double longitude, AuthorityCenter center) {
         double distance = GeoUtils.haversineKm(latitude, longitude, center.getLatitude(), center.getLongitude());
         int etaMinutes = Math.max(3, (int) Math.ceil(distance * 4));
@@ -76,6 +83,14 @@ public class EmergencyService {
     }
 
     private EmergencyResponse toResponse(EmergencyAlert alert) {
+        return toResponse(alert, false);
+    }
+
+    private EmergencyResponse toDetailResponse(EmergencyAlert alert) {
+        return toResponse(alert, true);
+    }
+
+    private EmergencyResponse toResponse(EmergencyAlert alert, boolean includeEvidenceImage) {
         return new EmergencyResponse(
                 alert.getId(),
                 alert.getType(),
@@ -85,7 +100,7 @@ public class EmergencyService {
                 alert.getLongitude(),
                 alert.getAddressReference(),
                 alert.getNotes(),
-                null,
+                includeEvidenceImage ? alert.getEvidenceImageBase64() : null,
                 alert.getAssignedAuthorityName(),
                 alert.getAssignedDistanceKm(),
                 alert.getEstimatedResponseMinutes(),

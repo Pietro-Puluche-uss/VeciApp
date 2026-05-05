@@ -9,6 +9,7 @@ import com.veciapp.api.dto.CreateIncidentReportRequest;
 import com.veciapp.api.dto.IncidentReportResponse;
 import com.veciapp.api.entity.IncidentReport;
 import com.veciapp.api.entity.User;
+import com.veciapp.api.exception.ResourceNotFoundException;
 import com.veciapp.api.repository.IncidentReportRepository;
 
 @Service
@@ -44,7 +45,21 @@ public class IncidentReportService {
                 .toList();
     }
 
+    public IncidentReportResponse getMineById(Long userId, Long reportId) {
+        IncidentReport report = incidentReportRepository.findByIdAndUserId(reportId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Reporte no encontrado"));
+        return toDetailResponse(report);
+    }
+
     private IncidentReportResponse toResponse(IncidentReport report) {
+        return toResponse(report, false);
+    }
+
+    private IncidentReportResponse toDetailResponse(IncidentReport report) {
+        return toResponse(report, true);
+    }
+
+    private IncidentReportResponse toResponse(IncidentReport report, boolean includeEvidenceImage) {
         return new IncidentReportResponse(
                 report.getId(),
                 report.getCategory(),
@@ -55,7 +70,7 @@ public class IncidentReportService {
                 report.getAddressReference(),
                 report.getLatitude(),
                 report.getLongitude(),
-                null,
+                includeEvidenceImage ? report.getEvidenceImageBase64() : null,
                 report.getCreatedAt());
     }
 

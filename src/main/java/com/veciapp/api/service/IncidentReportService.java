@@ -33,6 +33,7 @@ public class IncidentReportService {
         report.setAddressReference(blankToNull(request.addressReference()));
         report.setLatitude(request.latitude());
         report.setLongitude(request.longitude());
+        report.setEvidenceImageBase64(blankToNull(request.evidenceImageBase64()));
         return toResponse(incidentReportRepository.save(report));
     }
 
@@ -54,6 +55,7 @@ public class IncidentReportService {
                 report.getAddressReference(),
                 report.getLatitude(),
                 report.getLongitude(),
+                report.getEvidenceImageBase64(),
                 report.getCreatedAt());
     }
 
@@ -64,4 +66,3 @@ public class IncidentReportService {
         return value.trim();
     }
 }
-

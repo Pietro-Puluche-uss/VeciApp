@@ -10,6 +10,6 @@ public record CreateEmergencyRequest(
         Double latitude,
         Double longitude,
         @Size(max = 180) String addressReference,
-        @Size(max = 300) String notes) {
+        @Size(max = 300) String notes,
+        @Size(max = 2_000_000) String evidenceImageBase64) {
 }
-

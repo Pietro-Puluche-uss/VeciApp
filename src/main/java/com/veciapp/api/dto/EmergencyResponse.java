@@ -15,9 +15,9 @@ public record EmergencyResponse(
         Double longitude,
         String addressReference,
         String notes,
+        String evidenceImageBase64,
         String assignedAuthorityName,
         BigDecimal assignedDistanceKm,
         Integer estimatedResponseMinutes,
         OffsetDateTime createdAt) {
 }
-

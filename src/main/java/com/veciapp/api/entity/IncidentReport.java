@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -51,6 +52,10 @@ public class IncidentReport {
     private Double latitude;
 
     private Double longitude;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String evidenceImageBase64;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;
@@ -143,8 +148,15 @@ public class IncidentReport {
         this.longitude = longitude;
     }
 
+    public String getEvidenceImageBase64() {
+        return evidenceImageBase64;
+    }
+
+    public void setEvidenceImageBase64(String evidenceImageBase64) {
+        this.evidenceImageBase64 = evidenceImageBase64;
+    }
+
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 }
-

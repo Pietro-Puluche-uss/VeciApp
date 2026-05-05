@@ -50,6 +50,7 @@ public class EmergencyService {
         alert.setLongitude(longitude);
         alert.setAddressReference(blankToNull(request.addressReference()));
         alert.setNotes(blankToNull(request.notes()));
+        alert.setEvidenceImageBase64(blankToNull(request.evidenceImageBase64()));
 
         authorityCenterRepository.findByActiveTrueOrderByNameAsc().stream()
                 .min(Comparator.comparingDouble(center -> GeoUtils.haversineKm(
@@ -84,6 +85,7 @@ public class EmergencyService {
                 alert.getLongitude(),
                 alert.getAddressReference(),
                 alert.getNotes(),
+                alert.getEvidenceImageBase64(),
                 alert.getAssignedAuthorityName(),
                 alert.getAssignedDistanceKm(),
                 alert.getEstimatedResponseMinutes(),
@@ -97,4 +99,3 @@ public class EmergencyService {
         return value.trim();
     }
 }
-

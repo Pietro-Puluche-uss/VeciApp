@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -50,6 +51,10 @@ public class EmergencyAlert {
 
     @Column(length = 300)
     private String notes;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String evidenceImageBase64;
 
     @Column(length = 120)
     private String assignedAuthorityName;
@@ -132,6 +137,14 @@ public class EmergencyAlert {
         this.notes = notes;
     }
 
+    public String getEvidenceImageBase64() {
+        return evidenceImageBase64;
+    }
+
+    public void setEvidenceImageBase64(String evidenceImageBase64) {
+        this.evidenceImageBase64 = evidenceImageBase64;
+    }
+
     public String getAssignedAuthorityName() {
         return assignedAuthorityName;
     }
@@ -160,4 +173,3 @@ public class EmergencyAlert {
         return createdAt;
     }
 }
-

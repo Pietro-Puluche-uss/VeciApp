@@ -15,6 +15,6 @@ public record IncidentReportResponse(
         String addressReference,
         Double latitude,
         Double longitude,
+        String evidenceImageBase64,
         OffsetDateTime createdAt) {
 }
-

@@ -12,6 +12,6 @@ public record CreateIncidentReportRequest(
         @NotBlank @Size(max = 600) String description,
         @Size(max = 180) String addressReference,
         Double latitude,
-        Double longitude) {
+        Double longitude,
+        @Size(max = 2_000_000) String evidenceImageBase64) {
 }
-

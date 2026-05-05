@@ -55,7 +55,7 @@ public class IncidentReportService {
                 report.getAddressReference(),
                 report.getLatitude(),
                 report.getLongitude(),
-                report.getEvidenceImageBase64(),
+                null,
                 report.getCreatedAt());
     }
 

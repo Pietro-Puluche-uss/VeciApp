@@ -85,7 +85,7 @@ public class EmergencyService {
                 alert.getLongitude(),
                 alert.getAddressReference(),
                 alert.getNotes(),
-                alert.getEvidenceImageBase64(),
+                null,
                 alert.getAssignedAuthorityName(),
                 alert.getAssignedDistanceKm(),
                 alert.getEstimatedResponseMinutes(),

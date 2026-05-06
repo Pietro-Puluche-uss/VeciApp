@@ -1,5 +1,7 @@
 package com.veciapp.api.service;
 
+import java.util.Locale;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,16 +30,20 @@ public class ProfileService {
     @Transactional
     public ProfileResponse updateProfile(Long userId, UpdateProfileRequest request) {
         User user = loadUser(userId);
+        String newEmail = request.email().trim().toLowerCase(Locale.ROOT);
         String newPhone = request.phone().trim();
+        userRepository.findByEmailIgnoreCase(newEmail)
+                .filter(other -> !other.getId().equals(userId))
+                .ifPresent(other -> {
+                    throw new BadRequestException("El correo ya esta registrado");
+                });
         userRepository.findByPhone(newPhone)
                 .filter(other -> !other.getId().equals(userId))
                 .ifPresent(other -> {
                     throw new BadRequestException("El telefono ya esta registrado");
                 });
-        user.setFirstName(request.firstName().trim());
-        user.setLastName(request.lastName().trim());
+        user.setEmail(newEmail);
         user.setPhone(newPhone);
-        user.setDocumentNumber(blankToNull(request.documentNumber()));
         user.setProfilePhotoUrl(blankToNull(request.profilePhotoUrl()));
         return toResponse(userRepository.save(user));
     }
@@ -84,4 +90,3 @@ public class ProfileService {
         return value.trim();
     }
 }
-

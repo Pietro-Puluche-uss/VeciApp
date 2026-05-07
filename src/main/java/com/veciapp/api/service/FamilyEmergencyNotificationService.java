@@ -24,6 +24,8 @@ import com.veciapp.api.repository.FamilyMemberRepository;
 @Service
 public class FamilyEmergencyNotificationService {
 
+    private static final int ALERT_RETENTION_DAYS = 7;
+
     private final FamilyEmergencyNotificationRepository notificationRepository;
     private final FamilyMemberRepository familyMemberRepository;
     private final ProfileService profileService;
@@ -59,9 +61,11 @@ public class FamilyEmergencyNotificationService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<FamilyEmergencyAlertResponse> listMyAlerts(Long userId) {
-        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(userId).stream()
+        cleanupExpiredAlerts(userId);
+        OffsetDateTime cutoff = OffsetDateTime.now().minusDays(ALERT_RETENTION_DAYS);
+        return notificationRepository.findByRecipientIdAndCreatedAtAfterOrderByCreatedAtDesc(userId, cutoff).stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -74,6 +78,19 @@ public class FamilyEmergencyNotificationService {
             notification.setReadAt(OffsetDateTime.now());
             notificationRepository.save(notification);
         }
+    }
+
+    @Transactional
+    public void deleteAlert(Long userId, Long notificationId) {
+        long deleted = notificationRepository.deleteByIdAndRecipientId(notificationId, userId);
+        if (deleted == 0) {
+            throw new ResourceNotFoundException("Notificacion no encontrada");
+        }
+    }
+
+    @Transactional
+    public void clearAllAlerts(Long userId) {
+        notificationRepository.deleteByRecipientId(userId);
     }
 
     private void createNotificationForGroup(
@@ -130,6 +147,11 @@ public class FamilyEmergencyNotificationService {
                 alert.getAddressReference(),
                 notification.getCreatedAt(),
                 notification.getReadAt());
+    }
+
+    private void cleanupExpiredAlerts(Long userId) {
+        OffsetDateTime cutoff = OffsetDateTime.now().minusDays(ALERT_RETENTION_DAYS);
+        notificationRepository.deleteByRecipientIdAndCreatedAtBefore(userId, cutoff);
     }
 
     private boolean isAccepted(FamilyMember familyMember) {

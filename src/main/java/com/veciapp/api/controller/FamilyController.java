@@ -86,6 +86,20 @@ public class FamilyController {
         return new ApiMessageResponse("Notificacion marcada como leida");
     }
 
+    @DeleteMapping("/alerts/{id}")
+    public ApiMessageResponse deleteAlert(
+            Authentication authentication,
+            @PathVariable Long id) {
+        familyEmergencyNotificationService.deleteAlert(SecurityUtils.currentUserId(authentication), id);
+        return new ApiMessageResponse("Notificacion eliminada");
+    }
+
+    @DeleteMapping("/alerts")
+    public ApiMessageResponse clearAlerts(Authentication authentication) {
+        familyEmergencyNotificationService.clearAllAlerts(SecurityUtils.currentUserId(authentication));
+        return new ApiMessageResponse("Alertas eliminadas");
+    }
+
     @DeleteMapping("/members/{id}")
     public ApiMessageResponse removeMember(
             Authentication authentication,

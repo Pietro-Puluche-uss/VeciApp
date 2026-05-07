@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.veciapp.api.dto.ApiMessageResponse;
+import com.veciapp.api.dto.FamilyEmergencyAlertResponse;
 import com.veciapp.api.dto.FamilyInvitationResponse;
 import com.veciapp.api.dto.FamilyMapMemberResponse;
 import com.veciapp.api.dto.FamilyMemberRequest;
 import com.veciapp.api.dto.FamilyMemberResponse;
 import com.veciapp.api.security.SecurityUtils;
+import com.veciapp.api.service.FamilyEmergencyNotificationService;
 import com.veciapp.api.service.FamilyService;
 
 import jakarta.validation.Valid;
@@ -28,9 +30,13 @@ import jakarta.validation.Valid;
 public class FamilyController {
 
     private final FamilyService familyService;
+    private final FamilyEmergencyNotificationService familyEmergencyNotificationService;
 
-    public FamilyController(FamilyService familyService) {
+    public FamilyController(
+            FamilyService familyService,
+            FamilyEmergencyNotificationService familyEmergencyNotificationService) {
         this.familyService = familyService;
+        this.familyEmergencyNotificationService = familyEmergencyNotificationService;
     }
 
     @GetMapping("/members")
@@ -41,6 +47,11 @@ public class FamilyController {
     @GetMapping("/invitations/mine")
     public List<FamilyInvitationResponse> listMyInvitations(Authentication authentication) {
         return familyService.listMyInvitations(SecurityUtils.currentUserId(authentication));
+    }
+
+    @GetMapping("/alerts")
+    public List<FamilyEmergencyAlertResponse> listMyAlerts(Authentication authentication) {
+        return familyEmergencyNotificationService.listMyAlerts(SecurityUtils.currentUserId(authentication));
     }
 
     @PostMapping("/members")
@@ -65,6 +76,14 @@ public class FamilyController {
             @PathVariable Long id) {
         familyService.rejectInvitation(SecurityUtils.currentUserId(authentication), id);
         return new ApiMessageResponse("Invitacion rechazada");
+    }
+
+    @PostMapping("/alerts/{id}/read")
+    public ApiMessageResponse markAlertRead(
+            Authentication authentication,
+            @PathVariable Long id) {
+        familyEmergencyNotificationService.markAsRead(SecurityUtils.currentUserId(authentication), id);
+        return new ApiMessageResponse("Notificacion marcada como leida");
     }
 
     @DeleteMapping("/members/{id}")

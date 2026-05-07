@@ -25,14 +25,17 @@ public class EmergencyService {
     private final EmergencyAlertRepository emergencyAlertRepository;
     private final AuthorityCenterRepository authorityCenterRepository;
     private final ProfileService profileService;
+    private final FamilyEmergencyNotificationService familyEmergencyNotificationService;
 
     public EmergencyService(
             EmergencyAlertRepository emergencyAlertRepository,
             AuthorityCenterRepository authorityCenterRepository,
-            ProfileService profileService) {
+            ProfileService profileService,
+            FamilyEmergencyNotificationService familyEmergencyNotificationService) {
         this.emergencyAlertRepository = emergencyAlertRepository;
         this.authorityCenterRepository = authorityCenterRepository;
         this.profileService = profileService;
+        this.familyEmergencyNotificationService = familyEmergencyNotificationService;
     }
 
     @Transactional
@@ -58,7 +61,9 @@ public class EmergencyService {
                         latitude, longitude, center.getLatitude(), center.getLongitude())))
                 .ifPresent(center -> assignNearestCenter(alert, latitude, longitude, center));
 
-        return toResponse(emergencyAlertRepository.save(alert));
+        EmergencyAlert savedAlert = emergencyAlertRepository.save(alert);
+        familyEmergencyNotificationService.notifyEmergencyToGroups(userId, savedAlert);
+        return toResponse(savedAlert);
     }
 
     public List<EmergencyResponse> listMine(Long userId) {

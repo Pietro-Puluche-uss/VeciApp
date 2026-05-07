@@ -14,6 +14,7 @@ import com.veciapp.api.entity.User;
 import com.veciapp.api.exception.BadRequestException;
 import com.veciapp.api.exception.ForbiddenException;
 import com.veciapp.api.exception.ResourceNotFoundException;
+import com.veciapp.api.model.FamilyGroupType;
 import com.veciapp.api.model.SubscriptionPlan;
 import com.veciapp.api.repository.FamilyMemberRepository;
 import com.veciapp.api.repository.UserRepository;
@@ -67,6 +68,7 @@ public class FamilyService {
         familyMember.setMember(member);
         familyMember.setAlias(blankToNull(request.alias()));
         familyMember.setRelationshipLabel(blankToNull(request.relationshipLabel()));
+        familyMember.setGroupType(FamilyGroupType.fromValue(request.groupType()));
         return toResponse(familyMemberRepository.save(familyMember));
     }
 
@@ -103,6 +105,7 @@ public class FamilyService {
                 member.getPhone(),
                 familyMember.getAlias(),
                 familyMember.getRelationshipLabel(),
+                familyMember.getGroupType().name(),
                 familyMember.getCreatedAt());
     }
 

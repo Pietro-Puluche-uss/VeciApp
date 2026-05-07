@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+
+import com.veciapp.api.model.FamilyGroupType;
 
 @Entity
 @Table(
@@ -38,11 +42,18 @@ public class FamilyMember {
     @Column(length = 60)
     private String relationshipLabel;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private FamilyGroupType groupType;
+
     @Column(nullable = false)
     private OffsetDateTime createdAt;
 
     @PrePersist
     void prePersist() {
+        if (groupType == null) {
+            groupType = FamilyGroupType.FAMILY;
+        }
         if (createdAt == null) {
             createdAt = OffsetDateTime.now();
         }
@@ -84,8 +95,15 @@ public class FamilyMember {
         this.relationshipLabel = relationshipLabel;
     }
 
+    public FamilyGroupType getGroupType() {
+        return groupType == null ? FamilyGroupType.FAMILY : groupType;
+    }
+
+    public void setGroupType(FamilyGroupType groupType) {
+        this.groupType = groupType;
+    }
+
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 }
-

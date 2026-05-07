@@ -10,6 +10,6 @@ public record FamilyMemberResponse(
         String phone,
         String alias,
         String relationshipLabel,
+        String groupType,
         OffsetDateTime createdAt) {
 }
-

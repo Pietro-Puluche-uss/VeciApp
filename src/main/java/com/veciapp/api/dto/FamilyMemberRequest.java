@@ -7,6 +7,6 @@ import jakarta.validation.constraints.Size;
 public record FamilyMemberRequest(
         @NotBlank @Email String email,
         @Size(max = 80) String alias,
-        @Size(max = 60) String relationshipLabel) {
+        @Size(max = 60) String relationshipLabel,
+        String groupType) {
 }
-

@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 import com.veciapp.api.model.FamilyGroupType;
+import com.veciapp.api.model.FamilyMemberStatus;
 
 @Entity
 @Table(
@@ -46,6 +47,10 @@ public class FamilyMember {
     @Column(length = 20)
     private FamilyGroupType groupType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private FamilyMemberStatus status;
+
     @Column(nullable = false)
     private OffsetDateTime createdAt;
 
@@ -53,6 +58,9 @@ public class FamilyMember {
     void prePersist() {
         if (groupType == null) {
             groupType = FamilyGroupType.FAMILY;
+        }
+        if (status == null) {
+            status = FamilyMemberStatus.ACCEPTED;
         }
         if (createdAt == null) {
             createdAt = OffsetDateTime.now();
@@ -101,6 +109,14 @@ public class FamilyMember {
 
     public void setGroupType(FamilyGroupType groupType) {
         this.groupType = groupType;
+    }
+
+    public FamilyMemberStatus getStatus() {
+        return status == null ? FamilyMemberStatus.ACCEPTED : status;
+    }
+
+    public void setStatus(FamilyMemberStatus status) {
+        this.status = status;
     }
 
     public OffsetDateTime getCreatedAt() {

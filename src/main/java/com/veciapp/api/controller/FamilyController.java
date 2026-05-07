@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.veciapp.api.dto.ApiMessageResponse;
+import com.veciapp.api.dto.FamilyInvitationResponse;
 import com.veciapp.api.dto.FamilyMapMemberResponse;
 import com.veciapp.api.dto.FamilyMemberRequest;
 import com.veciapp.api.dto.FamilyMemberResponse;
@@ -37,6 +38,11 @@ public class FamilyController {
         return familyService.listMembers(SecurityUtils.currentUserId(authentication));
     }
 
+    @GetMapping("/invitations/mine")
+    public List<FamilyInvitationResponse> listMyInvitations(Authentication authentication) {
+        return familyService.listMyInvitations(SecurityUtils.currentUserId(authentication));
+    }
+
     @PostMapping("/members")
     @ResponseStatus(HttpStatus.CREATED)
     public FamilyMemberResponse addMember(
@@ -45,12 +51,34 @@ public class FamilyController {
         return familyService.addMember(SecurityUtils.currentUserId(authentication), request);
     }
 
+    @PostMapping("/invitations/{id}/accept")
+    public ApiMessageResponse acceptInvitation(
+            Authentication authentication,
+            @PathVariable Long id) {
+        familyService.acceptInvitation(SecurityUtils.currentUserId(authentication), id);
+        return new ApiMessageResponse("Invitacion aceptada");
+    }
+
+    @PostMapping("/invitations/{id}/reject")
+    public ApiMessageResponse rejectInvitation(
+            Authentication authentication,
+            @PathVariable Long id) {
+        familyService.rejectInvitation(SecurityUtils.currentUserId(authentication), id);
+        return new ApiMessageResponse("Invitacion rechazada");
+    }
+
     @DeleteMapping("/members/{id}")
     public ApiMessageResponse removeMember(
             Authentication authentication,
             @PathVariable Long id) {
         familyService.removeMember(SecurityUtils.currentUserId(authentication), id);
         return new ApiMessageResponse("Miembro familiar eliminado");
+    }
+
+    @DeleteMapping("/members/me")
+    public ApiMessageResponse leaveGroup(Authentication authentication) {
+        familyService.leaveGroup(SecurityUtils.currentUserId(authentication));
+        return new ApiMessageResponse("Saliste del grupo");
     }
 
     @GetMapping("/map")

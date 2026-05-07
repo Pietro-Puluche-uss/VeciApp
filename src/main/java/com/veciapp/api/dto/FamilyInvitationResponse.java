@@ -2,13 +2,11 @@ package com.veciapp.api.dto;
 
 import java.time.OffsetDateTime;
 
-public record FamilyMemberResponse(
+public record FamilyInvitationResponse(
         Long id,
         Long ownerUserId,
-        Long memberUserId,
-        String fullName,
-        String email,
-        String phone,
+        String ownerFullName,
+        String ownerEmail,
         String alias,
         String relationshipLabel,
         String groupType,

@@ -10,8 +10,9 @@ public interface FamilyMemberRepository extends JpaRepository<FamilyMember, Long
 
     List<FamilyMember> findByOwnerIdOrderByCreatedAtAsc(Long ownerId);
 
+    List<FamilyMember> findByMemberIdOrderByCreatedAtAsc(Long memberId);
+
     long countByOwnerId(Long ownerId);
 
     boolean existsByOwnerIdAndMemberId(Long ownerId, Long memberId);
 }
-
